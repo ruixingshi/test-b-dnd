@@ -26,13 +26,6 @@ const GROUP_FOLD_INFO = () => {
   return groupInfo;
 };
 
-// const reorder = (list, startIndex, endIndex) => {
-//   const result = Array.from(list);
-//   const [removed] = result.splice(startIndex, 1);
-//   result.splice(endIndex, 0, removed);
-//   return result;
-// };
-
 const getItemStyle = (isDragging, draggableStyle) => ({
   border: "solid 2px green",
   margin: "2px",
@@ -40,28 +33,74 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 });
 
-// const getItemStyle = (isDragging, draggableStyle) => ({
-//   // some basic styles to make the items look a bit nicer
-//   border: "solid 2px green",
-//   userSelect: "none",
-//   padding: 2 * 2,
-//   margin: `0 0 2px 0`,
-//   height: isDragging ? "200px" : "auto",
-//   width: isDragging ? "50px" : "220px",
-
-//   // change background colour if dragging
-//   background: isDragging ? "lightgreen" : "grey",
-
-//   // styles we need to apply on draggables
-//   ...draggableStyle,
-// });
-
 const AppNest = () => {
   const [renderInfo, setRenderInfo] = useState(RENDER_INFO);
   const [groupFoldStatus, setGroupFoldStatus] = useState(GROUP_FOLD_INFO());
   const [dragId, setDragId] = useState(null);
   const dragStartY = useRef(null);
   const appRef = useRef(null);
+
+  const adjustY = (_id) => {
+    const dom = document.getElementById(_id);
+    if (!dom) return;
+    const { top } = dom.getBoundingClientRect();
+    console.log("@@@ N", top, dragStartY.current);
+    appRef.current.scrollTop = top - dragStartY.current;
+    console.log("@@@ N+1", appRef.current.scrollTop);
+  };
+
+  const foldAllStatus = () => {
+    const newFoldStatus = { ...groupFoldStatus };
+    // 将所有分组状态设置为false
+    Object.keys(newFoldStatus).forEach((key) => {
+      newFoldStatus[key] = true;
+    });
+    flushSync(() => {
+      setGroupFoldStatus(newFoldStatus);
+    });
+  };
+
+  const resetFoldStatus = () => {
+    const newFoldStatus = { ...groupFoldStatus };
+    Object.keys(newFoldStatus).forEach((key) => {
+      newFoldStatus[key] = false;
+    });
+    setGroupFoldStatus(newFoldStatus);
+  };
+
+  const onBeforeCapture = (beforeCapture) => {
+    console.log("@@@ 5", beforeCapture.draggableId);
+    flushSync(() => {
+      if (beforeCapture.draggableId.startsWith("group")) {
+        foldAllStatus();
+        // adjustY();
+      }
+    });
+    flushSync(() => {
+      // foldAllStatus();
+      // setDragId(beforeCapture.draggableId);
+    });
+
+    // adjustY(beforeCapture.draggableId.slice(5));
+  };
+
+  const onBeforeDragStart = (startItem) => {
+    console.log("@@@ 2");
+    // 如果拖拽的是分组
+    if (startItem.draggableId?.startsWith("group")) {
+      // foldAllStatus();
+      // console.log("@@@ draggableId", startItem.draggableId);
+    }
+  };
+
+  const onDragStart = (startItem) => {
+    console.log("@@@ 3");
+    // 如果拖拽的是分组
+    if (startItem.draggableId.startsWith("group")) {
+      // foldAllStatus();
+      // adjustY();
+    }
+  };
 
   const onDragEnd = (result) => {
     console.log("@@@ result", result);
@@ -77,67 +116,8 @@ const AppNest = () => {
     // setItems(newItems);
   };
 
-  const onBeforeCapture = (beforeCapture) => {
-    console.log("@@@ 5", beforeCapture.draggableId);
-    flushSync(() => {
-      if (beforeCapture.draggableId.startsWith("group")) {
-        // foldAllStatus();
-        // adjustY();
-      }
-    });
-    flushSync(() => {
-      // foldAllStatus();
-      // setDragId(beforeCapture.draggableId);
-    });
-    // adjustY(beforeCapture.draggableId.slice(5));
-  };
-
-  const foldAllStatus = () => {
-    const newFoldStatus = { ...groupFoldStatus };
-    // 将所有分组状态设置为false
-    Object.keys(newFoldStatus).forEach((key) => {
-      newFoldStatus[key] = true;
-    });
-    flushSync(() => {
-      setGroupFoldStatus(newFoldStatus);
-    });
-  };
-
-  const onDragStart = (startItem) => {
-    console.log("@@@ 3");
-    // 如果拖拽的是分组
-    if (startItem.draggableId.startsWith("group")) {
-      // foldAllStatus();
-      // adjustY();
-    }
-  };
-
-  const resetFoldStatus = () => {
-    const newFoldStatus = { ...groupFoldStatus };
-    Object.keys(newFoldStatus).forEach((key) => {
-      newFoldStatus[key] = false;
-    });
-    setGroupFoldStatus(newFoldStatus);
-  };
-
-  const adjustY = (_id) => {
-    const dom = document.getElementById(_id);
-    if (!dom) return;
-    const { top } = dom.getBoundingClientRect();
-    console.log("@@@ N", top, dragStartY.current);
-    appRef.current.scrollTop = top - dragStartY.current;
-    console.log("@@@ N+1", appRef.current.scrollTop);
-  };
-
-  const onBeforeDragStart = (startItem) => {
-    console.log("@@@ 2");
-    // 如果拖拽的是分组
-    if (startItem.draggableId?.startsWith("group")) {
-      foldAllStatus();
-      // console.log("@@@ draggableId", startItem.draggableId);
-    }
-  };
   console.log("@@@ 4");
+
   return (
     <div className="app">
       <div>
@@ -190,7 +170,7 @@ const AppNest = () => {
                             {...provided.draggableProps}
                             style={getItemStyle(
                               snapshot.isDragging,
-                              // ||  dragId === "group" + String(item?.groupId),
+                              // dragId === "group" + String(item?.groupId),
                               provided.draggableProps.style
                             )}
                           >
