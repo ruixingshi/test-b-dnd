@@ -88,8 +88,11 @@ const AppNest = () => {
   const onDragStart = (startItem) => {
     console.log("@@@ start", startItem, startItem.draggableId.length);
     // 如果拖拽的是分组
-    if (startItem.draggableId.length === 4) {
-      // foldAllStatus()
+    if (
+      startItem.draggableId.length === 4 ||
+      startItem.draggableId.length === 1
+    ) {
+      foldAllStatus();
     }
   };
 
@@ -158,7 +161,7 @@ const AppNest = () => {
                               <div
                                 {...provided.dragHandleProps}
                                 onMouseDown={() => {
-                                  foldAllStatus();
+                                  // foldAllStatus();
                                 }}
                               >
                                 <DragOutlined />
@@ -175,7 +178,7 @@ const AppNest = () => {
                                 {item.groupName}({item.goalCount})
                               </div>
                             </div>
-
+                            {/* 所有子目标 */}
                             <div
                               className={
                                 groupFoldStatus[item.groupId]
