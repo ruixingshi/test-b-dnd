@@ -2,8 +2,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100vw;
   .app-container {
     height: 800px;
+    width: 400px;
     overflow: auto;
+
+    .group-item {
+      display: flex;
+      .group-item-drag {
+        display: flex;
+      }
+    }
+
+    .child-item-drag {
+      display: flex;
+    }
   }
 }

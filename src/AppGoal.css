@@ -1,0 +1,48 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+
+  .app-container {
+    width: 800px;
+    height: 800px;
+    overflow-y: auto;
+
+    .goals-expand {
+      height: auto;
+      max-height: 600px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .goals-fold {
+      max-height: 0;
+      transition: all 0.2s ease-in-out;
+      overflow: hidden;
+      .goal-name {
+        height: 0;
+        overflow: hidden;
+      }
+    }
+
+    .group-container,
+    .goal-container {
+      display: flex;
+      width: 100%;
+      .name {
+        width: 100%;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+    }
+
+    .group-name {
+      background: pink;
+    }
+
+    .goal-name {
+      border: 1px solid green;
+      background: lightblue;
+    }
+  }
+}
