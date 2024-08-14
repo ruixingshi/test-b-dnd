@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import React, { useState, useRef, useMemo, flushSync } from "react";
+import React, { useState, useRef, useMemo } from "react";
+import { flushSync } from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { DragOutlined, DownOutlined } from "@ant-design/icons";
+import { SubNest } from "./SubNest";
 import { GROUP_INFO, GOALS_INFO } from "./mockData";
-import "./AppGoal.css";
+import "./AppNest.css";
 
 const RENDER_INFO = () => {
   const groupInfo = [...GROUP_INFO];
@@ -37,7 +39,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 });
 
-const AppGoal = () => {
+const AppNest = () => {
   const [renderInfo, setRenderInfo] = useState(RENDER_INFO);
   const [groupFoldStatus, setGroupFoldStatus] = useState(GROUP_FOLD_INFO());
 
@@ -72,16 +74,22 @@ const AppGoal = () => {
     // setItems(newItems);
   };
 
+  const foldAllStatus = () => {
+    const newFoldStatus = { ...groupFoldStatus };
+    // 将所有分组状态设置为false
+    Object.keys(newFoldStatus).forEach((key) => {
+      newFoldStatus[key] = true;
+    });
+    // flushSync(() => {
+    setGroupFoldStatus(newFoldStatus);
+    // });
+  };
+
   const onDragStart = (startItem) => {
     console.log("@@@ start", startItem, startItem.draggableId.length);
     // 如果拖拽的是分组
     if (startItem.draggableId.length === 4) {
-      const newFoldStatus = { ...groupFoldStatus };
-      // 将所有分组状态设置为false
-      Object.keys(newFoldStatus).forEach((key) => {
-        newFoldStatus[key] = true;
-      });
-      setGroupFoldStatus(newFoldStatus);
+      // foldAllStatus()
     }
   };
 
@@ -115,7 +123,6 @@ const AppGoal = () => {
           全部展开
         </button>
       </div>
-
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <Droppable droppableId="droppable">
           {(provided) => (
@@ -127,79 +134,74 @@ const AppGoal = () => {
                 provided.innerRef(ref);
               }}
             >
-              {renderInfo.map((item) => {
+              {renderInfo.map((item, index) => {
                 return (
                   <>
                     {/* 分组标题 */}
                     <Draggable
                       key={String(item?.groupId)}
                       draggableId={String(item?.groupId)}
-                      index={getInd(item?.groupId)}
+                      index={index}
                     >
                       {(provided, snapshot) => (
-                        <div
-                          className="group-container"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                        >
-                          <div {...provided.dragHandleProps}>
-                            <DragOutlined />
+                        <>
+                          <div
+                            className="group-container"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                          >
+                            <div className="group-title">
+                              <div
+                                {...provided.dragHandleProps}
+                                onMouseDown={() => {
+                                  foldAllStatus();
+                                }}
+                              >
+                                <DragOutlined />
+                              </div>
+                              <DownOutlined
+                                onClick={() => {
+                                  const newFoldStatus = { ...groupFoldStatus };
+                                  newFoldStatus[item.groupId] =
+                                    !newFoldStatus[item.groupId];
+                                  setGroupFoldStatus(newFoldStatus);
+                                }}
+                              />
+                              <div className="name group-name">
+                                {item.groupName}({item.goalCount})
+                              </div>
+                            </div>
+
+                            <div
+                              className={
+                                groupFoldStatus[item.groupId]
+                                  ? "goals-fold"
+                                  : "goals-expand"
+                              }
+                            >
+                              <SubNest
+                                childItems={item.childGoals}
+                                id={item.groupId}
+                              />
+                            </div>
                           </div>
-                          <DownOutlined
-                            onClick={() => {
-                              const newFoldStatus = { ...groupFoldStatus };
-                              newFoldStatus[item.groupId] =
-                                !newFoldStatus[item.groupId];
-                              setGroupFoldStatus(newFoldStatus);
-                            }}
-                          />
-                          <div className="name group-name">
-                            {item.groupName}({item.goalCount})
-                          </div>
-                        </div>
+                        </>
                       )}
                     </Draggable>
                     {/* 所有子目标 */}
-                    <div
+                    {/* <div
                       className={
                         groupFoldStatus[item.groupId]
                           ? "goals-fold"
                           : "goals-expand"
                       }
                     >
-                      {item.childGoals.map((item) => {
-                        return (
-                          <Draggable
-                            key={item.goalSerialNumber}
-                            draggableId={item.goalSerialNumber}
-                            index={getInd(item.goalSerialNumber)}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                className="goal-container"
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                style={getItemStyle(
-                                  snapshot.isDragging,
-                                  provided.draggableProps.style
-                                )}
-                              >
-                                <div {...provided.dragHandleProps}>
-                                  <DragOutlined />
-                                </div>
-                                <div className="name goal-name">
-                                  {item.title}
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        );
-                      })}
-                    </div>
+                      <SubNest childItems={item.childGoals} id={item.groupId} />
+                    </div> */}
                   </>
                 );
               })}
@@ -212,4 +214,4 @@ const AppGoal = () => {
   );
 };
 
-export default AppGoal;
+export default AppNest;
