@@ -6,8 +6,6 @@ import { DragOutlined, DownOutlined } from "@ant-design/icons";
 import { GROUP_INFO, GOALS_INFO } from "./mockData";
 import "./AppGoal.css";
 
-const CHILD_COUNTS = 3;
-
 const RENDER_INFO = () => {
   const groupInfo = [...GROUP_INFO];
   groupInfo.forEach((item) => {
@@ -26,23 +24,6 @@ const GROUP_FOLD_INFO = () => {
   return groupInfo;
 };
 
-const getChildItems = (count, fatherKey) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `cItem-${fatherKey * (CHILD_COUNTS + 1) + 1 + k}`,
-    content: `cItem-${fatherKey * (CHILD_COUNTS + 1) + 1 + k}`,
-    group: fatherKey,
-    index: fatherKey * (CHILD_COUNTS + 1) + 1 + k,
-  }));
-
-const getItems = (count) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    group: k,
-    id: `item-${k * (CHILD_COUNTS + 1)}`,
-    content: `item ${k * (CHILD_COUNTS + 1)}`,
-    child: getChildItems(CHILD_COUNTS, k),
-    index: k * (CHILD_COUNTS + 1),
-  }));
-
 // const reorder = (list, startIndex, endIndex) => {
 //   const result = Array.from(list);
 //   const [removed] = result.splice(startIndex, 1);
@@ -57,8 +38,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 });
 
 const AppGoal = () => {
-  const [childGoalsgroupInfo, setGroupInfo] = useState(GROUP_INFO);
-  const [goalsInfo, setGoalsInfo] = useState(GOALS_INFO);
   const [renderInfo, setRenderInfo] = useState(RENDER_INFO);
   const [groupFoldStatus, setGroupFoldStatus] = useState(GROUP_FOLD_INFO());
 
