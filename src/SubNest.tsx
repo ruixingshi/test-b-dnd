@@ -3,9 +3,9 @@ import React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { DragOutlined, DownOutlined } from "@ant-design/icons";
 
-export const SubNest = ({ childItems, id = 999999 }) => {
+export const SubNest = ({ childItems, id }) => {
   return (
-    <Droppable droppableId={id || 999999} type={`droppableSubItem`}>
+    <Droppable droppableId={"sub" + id} type={`droppableSubItem`}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
@@ -35,6 +35,7 @@ export const SubNest = ({ childItems, id = 999999 }) => {
               )}
             </Draggable>
           ))}
+          {childItems?.length === 0 && <div className="empty"></div>}
           {provided.placeholder}
         </div>
       )}

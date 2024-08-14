@@ -51,5 +51,16 @@
       border: 1px solid green;
       background: lightblue;
     }
+
+    .empty {
+      height: 5px;
+    }
+
+    .fake {
+      height: 1000px;
+      display: flex;
+      align-items: center;
+      background-color: cornsilk;
+    }
   }
 }
