@@ -12,12 +12,12 @@
     .goals-expand {
       height: auto;
       max-height: 99999px;
-      transition: all 0.1s ease-in-out;
+      /* transition: all 0.1s ease-in-out; */
     }
 
     .goals-fold {
       max-height: 0;
-      transition: all 0.1s ease-in-out;
+      /* transition: all 0.1s ease-in-out; */
       overflow: hidden;
       .goal-name {
         height: 0;

@@ -36,7 +36,7 @@ const GROUP_FOLD_INFO = () => {
 const getItemStyle = (isDragging, draggableStyle) => ({
   border: "solid 2px green",
   margin: "2px",
-  maxHeight: isDragging ? "30px" : "none",
+  // maxHeight: isDragging ? "30px" : "none",
   ...draggableStyle,
 });
 
@@ -79,12 +79,15 @@ const AppNest = () => {
 
   const onBeforeCapture = (beforeCapture) => {
     console.log("@@@ 5", beforeCapture.draggableId);
-    // flushSync(() => {
-    //   foldAllStatus();
-    // });
+    flushSync(() => {
+      if (beforeCapture.draggableId.startsWith("group")) {
+        // foldAllStatus();
+        // adjustY();
+      }
+    });
     flushSync(() => {
       // foldAllStatus();
-      setDragId(beforeCapture.draggableId);
+      // setDragId(beforeCapture.draggableId);
     });
     // adjustY(beforeCapture.draggableId.slice(5));
   };
@@ -130,7 +133,7 @@ const AppNest = () => {
     console.log("@@@ 2");
     // 如果拖拽的是分组
     if (startItem.draggableId?.startsWith("group")) {
-      // foldAllStatus();
+      foldAllStatus();
       // console.log("@@@ draggableId", startItem.draggableId);
     }
   };
@@ -168,6 +171,7 @@ const AppNest = () => {
                 appRef.current = ref;
                 provided.innerRef(ref);
               }}
+              // style={{ maxHeight: dragId ? "400px" : "none" }}
             >
               {renderInfo.map((item, index) => {
                 return (
@@ -185,8 +189,8 @@ const AppNest = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             style={getItemStyle(
-                              snapshot.isDragging ||
-                                dragId === "group" + String(item?.groupId),
+                              snapshot.isDragging,
+                              // ||  dragId === "group" + String(item?.groupId),
                               provided.draggableProps.style
                             )}
                           >
@@ -197,7 +201,7 @@ const AppNest = () => {
                                   console.log("@@@ 1", e.clientX, e.clientY);
                                   dragStartY.current = e.clientY;
                                   flushSync(() => {
-                                    foldAllStatus();
+                                    // foldAllStatus();
                                   });
                                   // window.setTimeout(() => {
                                   //   adjustY(item?.groupId);
@@ -248,7 +252,7 @@ const AppNest = () => {
                   </>
                 );
               })}
-              {dragId ? <div className="fake">fake</div> : null}
+              {/* {dragId ? <div className="fake">fake</div> : null} */}
               {provided.placeholder}
             </div>
           )}
