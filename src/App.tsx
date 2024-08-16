@@ -42,7 +42,6 @@ const App = () => {
   const appRef = useRef(null);
 
   const onDragEnd = (result) => {
-    console.log("@@@ result", result);
     if (!result.destination) {
       return;
     }
