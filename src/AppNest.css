@@ -36,6 +36,18 @@
       }
     }
 
+    .is-selected {
+      background-color: aqua;
+    }
+
+    .is-selected.is-dragging {
+      .goal-name {
+        border: 1px solid lightslategray;
+        background: lightgrey;
+        color: gray;
+      }
+    }
+
     .group-container {
       flex-direction: column;
       .group-title {
@@ -56,11 +68,32 @@
       height: 5px;
     }
 
-    .fake {
-      height: 1000px;
+    .fake-top {
+      /* height: 100vh; */
       display: flex;
       align-items: center;
-      background-color: cornsilk;
+      background-color: lightblue;
+    }
+
+    .fake-bottom {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      background-color: lightblue;
     }
   }
+}
+
+.a-ment {
+  height: 400px;
+  width: 100%;
+  background: lightcyan;
+}
+
+.number {
+  position: absolute;
+  right: 0;
+  top: -5px;
+  width: 100px;
+  background-color: lightgreen;
 }

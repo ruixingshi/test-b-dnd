@@ -60,7 +60,6 @@ const AppGoal = () => {
   const appRef = useRef(null);
 
   const onDragEnd = (result) => {
-    console.log("@@@ result", result);
     if (!result.destination) {
       return;
     }
@@ -73,7 +72,6 @@ const AppGoal = () => {
   };
 
   const onDragStart = (startItem) => {
-    console.log("@@@ start", startItem, startItem.draggableId.length);
     // 如果拖拽的是分组
     if (startItem.draggableId.length === 4) {
       const newFoldStatus = { ...groupFoldStatus };
